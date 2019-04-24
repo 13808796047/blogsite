@@ -1,5 +1,6 @@
 import markdown
 from django.shortcuts import render, get_object_or_404
+from comments.forms import CommentForm
 from .models import Post, Category
 
 
@@ -16,7 +17,11 @@ def detail(request, pk):
         'markdown.extensions.codehilite',
         'markdown.extensions.toc'
     ])
-    return render(request, 'blog/detail.html', {'post': post})
+    form = CommentForm()
+    # 获取这篇post下的全部评论
+    comment_list = post.comment_set.all()
+
+    return render(request, 'blog/detail.html', {'post': post, 'form': form, 'comment_list': comment_list})
 
 
 # 日期分类归档
