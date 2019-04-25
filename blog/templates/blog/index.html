@@ -3,6 +3,9 @@
     首页
 {% endblock %}
 {% block main %}
+    {% if error_msg %}
+        <p>{{ error_msg }}</p>
+    {% endif %}
     {% for post in posts %}
         <article class="post post-{{ post.pk }}">
             <header class="entry-header">
@@ -81,7 +84,7 @@
                 </li>
             </ul>
             <p>
-                (共有{{ page_obj.paginator.count }}篇文章) 当前第{{ page_obj.number }}页 共{{paginator.num_pages }}页
+                (共有{{ page_obj.paginator.count }}篇文章) 当前第{{ page_obj.number }}页 共{{ paginator.num_pages }}页
             </p>
         </div>
 
