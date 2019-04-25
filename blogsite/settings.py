@@ -25,9 +25,10 @@ SECRET_KEY = '9tuvnf*i-o#f_2)&$p^0gw^p9s@7($-1-_^orsvxiu8h+i7$+4'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+# DEBUG = False
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost ', '.zmrenwu.com']
 # Application definition
-
+# ALLOWED_HOSTS 是允许访问的域名列表，127.0.0.1 和 localhost 是本地访问的域名，.zmrenwu.com 是访问服务器的域名（换成你自己的域名）。域名前加一个点表示允许访问该域名下的子域名，比如 www.zmrenwu.com、test.zmrenwu.com 等二级域名同样允许访问。如果不加前面的点则只允许访问 zmrenwu.com。
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -115,3 +116,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
