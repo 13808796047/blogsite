@@ -11,7 +11,7 @@
                 </h1>
                 <div class="entry-meta">
                     <span class="post-category"><a
-                            href="{% url 'blog:category' post.category.pk%}">{{ post.category.name }}</a></span>
+                            href="{% url 'blog:category' post.category.pk %}">{{ post.category.name }}</a></span>
                     <span class="post-date"><a href="#"><time class="entry-date"
                                                               datetime="{{ post.created_time }}">{{ post.created_time }}</time></a></span>
                     <span class="post-author"><a href="#">{{ post.author }}</a></span>
@@ -31,26 +31,61 @@
     {% endfor %}
 
 
-    <!-- 简单分页效果
-    <div class="pagination-simple">
-        <a href="#">上一页</a>
-        <span class="current">第 6 页 / 共 11 页</span>
-        <a href="#">下一页</a>
-    </div>
-    -->
-    <div class="pagination">
-        <ul>
-            <li><a href="">1</a></li>
-            <li><a href="">...</a></li>
-            <li><a href="">4</a></li>
-            <li><a href="">5</a></li>
-            <li class="current"><a href="">6</a></li>
-            <li><a href="">7</a></li>
-            <li><a href="">8</a></li>
-            <li><a href="">...</a></li>
-            <li><a href="">11</a></li>
-        </ul>
-    </div>
+    {#    简单分页效果#}
+    {#    {% if is_paginated %}#}
+    {#        <div class="pagination-simple">#}
+    {#            如果当前页还有上页，显示一个上一页的按钮#}
+    {#            {% if page_obj.has_previous %}#}
+    {#                <a href="?page={{ page_obj.previous_page_number }}">上一页</a>#}
+    {#            {% endif %}#}
+    {#            显示当前页信息#}
+    {#            <span class="current">第 {{ page_obj.number }} 页 / 共 {{ paginator.num_pages }} 页</span>#}
+    {#            {% if page_obj.has_next %}#}
+    {#                <a href="?page={{ page_obj.next_page_number }}">下一页</a>#}
+    {#            {% endif %}#}
+    {#        </div>#}
+    {#    {% endif %}#}
+
+    {% if is_paginated %}
+        <div class="pagination">
+            <ul class="pagination">
+                <li>
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">上一页</span>
+                        </a>
+                    {% else %}
+                        <span aria-hidden="true">上一页</span>
+                    {% endif %}
+                </li>
+
+                {% for page_num in page_range %}
+                    {% if page_num == page_obj.number %}
+                        <li class="active"><span>{{ page_num }}</span></li>
+                    {% else %}
+                        {% if page_num == '...' %}
+                            <li><span>{{ page_num }}</span></li>
+                        {% else %}
+                            <li><a href="?page={{ page_num }}">{{ page_num }}</a></li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                <li>
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">下一页</span>
+                        </a>
+                    {% else %}
+                        <span>下一页</span>
+                    {% endif %}
+                </li>
+            </ul>
+            <p>
+                (共有{{ page_obj.paginator.count }}篇文章) 当前第{{ page_obj.number }}页 共{{paginator.num_pages }}页
+            </p>
+        </div>
+
+    {% endif %}
 {% endblock %}
 {% block toc %}
 
