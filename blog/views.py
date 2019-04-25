@@ -1,9 +1,12 @@
 import markdown
 from django.shortcuts import render, get_object_or_404
 from comments.forms import CommentForm
-from .models import Post, Category
+from .models import Post, Category, Tag
 from django.views.generic import ListView, DetailView
 from django.conf import settings
+from django.utils.text import slugify
+from markdown.extensions.toc import TocExtension
+
 
 class IndexView(ListView):
     model = Post
@@ -180,12 +183,14 @@ class PostDetailView(DetailView):
     def get_object(self, queryset=None):
         # 覆写get_object方法的目的是因为需要对post的body值进行渲染
         post = super(PostDetailView, self).get_object(queryset=None)
-        post.body = markdown.markdown(post.body,
-                                      extensions=[
-                                          'markdown.extensions.extra',
-                                          'markdown.extensions.codehilite',
-                                          'markdown.extensions.toc',
-                                      ])
+        md = markdown.Markdown(extensions=[
+            'markdown.extensions.extra',
+            'markdown.extensions.codehilite',
+            TocExtension(slugify=slugify)
+        ])
+        post.body = md.convert(post.body)
+        # 插入侧边文章目录
+        post.toc = md.toc
         return post
 
     def get_context_data(self, **kwargs):
@@ -227,3 +232,10 @@ class CategoryView(IndexView):
     def get_queryset(self):
         cate = get_object_or_404(Category, pk=self.kwargs.get('pk'))
         return super(CategoryView, self).get_queryset().filter(category=cate)
+
+
+# 标签云
+class TagView(IndexView):
+    def get_queryset(self):
+        tag = get_object_or_404(Tag, pk=self.kwargs.get('pk'))
+        return super(TagView, self).get_queryset().filter(tags=tag)
